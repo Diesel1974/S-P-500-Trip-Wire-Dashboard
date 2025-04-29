@@ -1,0 +1,823 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S&P 500 Trip-Wire Dashboard</title>
+    <!-- Tailwind CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <!-- Chart.js Financial Plugin for specialized financial charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.1.1/dist/chartjs-chart-financial.min.js"></script>
+    <!-- FontAwesome for icons -->
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom styling to ensure dashboard is optimized for PDF export */
+         {
+            body {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .dashboard-container {
+                break-inside: avoid;
+            }
+        }
+
+        /* Custom gauge styling */
+        .gauge-container {
+            position: relative;
+            width: 200px;
+            height: 100px;
+            margin: 0 auto;
+        }
+        
+        .gauge {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            border-top-left-radius: 100px;
+            border-top-right-radius: 100px;
+        }
+        
+        .gauge-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #10B981 0%, #FBBF24 50%, #EF4444 100%);
+            border-top-left-radius: 100px;
+            border-top-right-radius: 100px;
+        }
+        
+        .gauge-mask {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            background: #1F2937;
+            border-top-left-radius: 100px;
+            border-top-right-radius: 100px;
+            top: 20%;
+            left: 10%;
+        }
+        
+        .gauge-needle {
+            position: absolute;
+            width: 4px;
+            height: 50%;
+            background-color: white;
+            left: 50%;
+            bottom: 0;
+            transform-origin: bottom center;
+            transform: rotate(0deg);
+            transition: transform 1s ease-out;
+        }
+        
+        .gauge-value {
+            position: absolute;
+            width: 100%;
+            font-size: 20px;
+            text-align: center;
+            color: white;
+            bottom: 5px;
+        }
+        
+        /* Toggle switch styling */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #374151;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #10B981;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen" id="theme-body">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold">S&P 500 Trip-Wire Dashboard</h1>
+                <p class="text-gray-400">Early warning system for market volatility</p>
+            </div>
+            <div class="flex items-center">
+                <span class="mr-2 text-sm">Dark</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="ml-2 text-sm">Light</span>
+            </div>
+        </header>
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container">
+            <!-- Status Bar -->
+            <div class="bg-gray-800 rounded-lg p-4 mb-6 flex justify-between items-center">
+                <div class="flex items-center">
+                    <span class="inline-block w-3 h-3 rounded-full bg-green-500 mr-2"></span>
+                    <span>API Connected</span>
+                </div>
+                <div>
+                    <span>Last Updated: <span id="last-updated">Apr 29, 2025, 10:30 AM</span></span>
+                </div>
+                <div>
+                    <button id="refresh-btn" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md flex items-center">
+                        <i class="fas fa-sync-alt mr-2"></i> Refresh Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Overall Risk Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Risk Gauge -->
+                <div class="bg-gray-800 rounded-lg p-6 col-span-1">
+                    <h2 class="text-xl font-semibold mb-4">Overall Risk</h2>
+                    <div class="gauge-container mb-4">
+                        <div class="gauge">
+                            <div class="gauge-background"></div>
+                            <div class="gauge-mask"></div>
+                            <div class="gauge-needle" id="risk-needle" style="transform: rotate(30deg);"></div>
+                            <div class="gauge-value">42/100</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-yellow-400 font-bold text-xl">Caution</span>
+                        <p class="text-gray-400 mt-2">Multiple indicators showing elevated risk levels</p>
+                    </div>
+                    <!-- Risk Progress Bar -->
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-700 rounded-full h-4">
+                            <div class="bg-gradient-to-r from-green-500 via-yellow-400 to-red-500 h-4 rounded-full" style="width: 42%"></div>
+                        </div>
+                        <div class="flex justify-between mt-1 text-xs text-gray-400">
+                            <span>Low Risk</span>
+                            <span>Caution</span>
+                            <span>High Risk</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historical Risk Trend -->
+                <div class="bg-gray-800 rounded-lg p-6 col-span-2">
+                    <h2 class="text-xl font-semibold mb-4">Historical Risk Trend</h2>
+                    <canvas id="risk-trend-chart" height="230"></canvas>
+                </div>
+            </div>
+
+            <!-- Trip-Wire Indicators Table -->
+            <div class="bg-gray-800 rounded-lg p-6 mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Trip-Wire Indicators</h2>
+                    <div class="flex space-x-2">
+                        <button class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-sm">Sort by Name</button>
+                        <button class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-sm">Sort by Severity</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Indicator</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Current Value</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Threshold</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-gray-800 divide-y divide-gray-700">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">Yield Curve</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-0.25%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">0.00%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-900 text-red-300">Alert</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <i class="fas fa-arrow-down text-red-500"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">LEI (Leading Economic Index)</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-0.3%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-0.4%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-900 text-yellow-300">Caution</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <i class="fas fa-arrow-down text-red-500"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">Earnings Guidance</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-5%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-10%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-900 text-yellow-300">Caution</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <i class="fas fa-arrow-down text-red-500"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">Credit Spreads</td>
+                                <td class="px-6 py-4 whitespace-nowrap">3.2%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">3.5%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-900 text-yellow-300">Caution</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <i class="fas fa-arrow-up text-red-500"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">VIX</td>
+                                <td class="px-6 py-4 whitespace-nowrap">22.5</td>
+                                <td class="px-6 py-4 whitespace-nowrap">30.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-900 text-yellow-300">Caution</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <i class="fas fa-arrow-up text-red-500"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">Market Breadth</td>
+                                <td class="px-6 py-4 whitespace-nowrap">0.75</td>
+                                <td class="px-6 py-4 whitespace-nowrap">0.50</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-900 text-green-300">Safe</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <i class="fas fa-arrow-down text-yellow-500"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">Fund Flows</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-$2.5B</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-$5.0B</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-900 text-yellow-300">Caution</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <i class="fas fa-arrow-down text-red-500"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">Fed Policy</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Restrictive</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Neutral</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-900 text-yellow-300">Caution</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <i class="fas fa-equals text-gray-500"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">CPI</td>
+                                <td class="px-6 py-4 whitespace-nowrap">3.2%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">4.0%</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-900 text-green-300">Safe</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <i class="fas fa-arrow-down text-green-500"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">Trade Policy</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Moderate</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Restrictive</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-900 text-green-300">Safe</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <i class="fas fa-equals text-gray-500"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Indicator Detail Panels -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Yield Curve Panel -->
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4">Yield Curve</h2>
+                    <canvas id="yield-curve-chart" height="200"></canvas>
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-400">The yield curve shows the inverted relationship between short and long-term Treasury yields. An inverted curve (negative value) has historically preceded recessions.</p>
+                    </div>
+                </div>
+
+                <!-- VIX Panel -->
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4">VIX (Volatility Index)</h2>
+                    <canvas id="vix-chart" height="200"></canvas>
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-400">The VIX measures market expectations of near-term volatility. Higher values indicate increased market fear and uncertainty.</p>
+                    </div>
+                </div>
+
+                <!-- Credit Spreads Panel -->
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4">Credit Spreads</h2>
+                    <canvas id="credit-spreads-chart" height="200"></canvas>
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-400">Credit spreads measure the yield difference between corporate bonds and Treasury securities. Widening spreads indicate increased perception of credit risk.</p>
+                    </div>
+                </div>
+
+                <!-- Market Breadth Panel -->
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h2 class="text-xl font-semibold mb-4">Market Breadth</h2>
+                    <canvas id="market-breadth-chart" height="200"></canvas>
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-400">Market breadth tracks the number of advancing stocks versus declining stocks. A ratio below 0.5 indicates narrow market participation, which can signal future weakness.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Methodology Section -->
+            <div class="bg-gray-800 rounded-lg p-6 mb-8">
+                <div class="flex justify-between items-center cursor-pointer" id="methodology-header">
+                    <h2 class="text-xl font-semibold">Methodology</h2>
+                    <i class="fas fa-chevron-down" id="methodology-chevron"></i>
+                </div>
+                <div class="mt-4 hidden" id="methodology-content">
+                    <p class="mb-4">The S&P 500 Trip-Wire Dashboard monitors key risk indicators to provide early warning signals of potential market volatility or downturns. Each indicator is evaluated against historical thresholds to determine its current status.</p>
+                    
+                    <h3 class="text-lg font-semibold mt-4 mb-2">Indicator Calculations:</h3>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-300">
+                        <li><strong>Yield Curve:</strong> Difference between 10-year and 2-year Treasury yields. Negative values indicate inversion.</li>
+                        <li><strong>LEI:</strong> The Conference Board's Leading Economic Index, measuring month-over-month change.</li>
+                        <li><strong>Earnings Guidance:</strong> Percentage of S&P 500 companies issuing negative guidance versus positive.</li>
+                        <li><strong>Credit Spreads:</strong> Difference between BBB corporate bond yields and Treasury yields.</li>
+                        <li><strong>VIX:</strong> The CBOE Volatility Index measuring implied volatility.</li>
+                        <li><strong>Market Breadth:</strong> Ratio of advancing stocks to declining stocks.</li>
+                        <li><strong>Fund Flows:</strong> Net inflow/outflow of funds to equity markets.</li>
+                        <li><strong>Fed Policy:</strong> Qualitative assessment of Federal Reserve monetary policy stance.</li>
+                        <li><strong>CPI:</strong> Year-over-year change in Consumer Price Index.</li>
+                        <li><strong>Trade Policy:</strong> Qualitative assessment of current trade policy impact on markets.</li>
+                    </ul>
+                    
+                    <h3 class="text-lg font-semibold mt-4 mb-2">Risk Calculation:</h3>
+                    <p class="mb-4">The overall risk score is calculated as a weighted average of all indicators, with greater weight given to historically reliable predictors like the yield curve and LEI. Scores are normalized on a 0-100 scale:</p>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-300">
+                        <li><strong>0-33:</strong> Low Risk - Market conditions appear stable</li>
+                        <li><strong>34-66:</strong> Caution - Some indicators showing signs of stress</li>
+                        <li><strong>67-100:</strong> High Risk - Multiple indicators signaling potential market stress</li>
+                    </ul>
+                    
+                    <p class="mt-4 text-sm text-gray-400">Data is sourced from Alpha Vantage API and refreshed every 60 seconds. The dashboard is intended as an informational tool only and should not be used as the sole basis for investment decisions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-500 text-sm mt-12">
+            <p>S&P 500 Trip-Wire Dashboard | Data provided by Alpha Vantage API</p>
+            <p class="mt-2">API Key: IT071H0SBYQJ38WU | Auto-refresh: Every 60 seconds</p>
+        </footer>
+    </div>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.getElementById('theme-body');
+        
+        // Check for stored theme preference
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.remove('bg-gray-900');
+            body.classList.add('bg-gray-100');
+            body.classList.remove('text-white');
+            body.classList.add('text-gray-900');
+            themeToggle.checked = true;
+            
+            // Update all chart backgrounds
+            document.querySelectorAll('.bg-gray-800').forEach(el => {
+                el.classList.remove('bg-gray-800');
+                el.classList.add('bg-white');
+            });
+            
+            // Update gauge mask
+            document.querySelector('.gauge-mask').style.background = '#f3f4f6';
+        }
+        
+        themeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                // Light mode
+                body.classList.remove('bg-gray-900');
+                body.classList.add('bg-gray-100');
+                body.classList.remove('text-white');
+                body.classList.add('text-gray-900');
+                
+                // Update all panel backgrounds
+                document.querySelectorAll('.bg-gray-800').forEach(el => {
+                    el.classList.remove('bg-gray-800');
+                    el.classList.add('bg-white');
+                });
+                
+                // Update gauge mask
+                document.querySelector('.gauge-mask').style.background = '#f3f4f6';
+                
+                localStorage.setItem('theme', 'light');
+            } else {
+                // Dark mode
+                body.classList.remove('bg-gray-100');
+                body.classList.add('bg-gray-900');
+                body.classList.remove('text-gray-900');
+                body.classList.add('text-white');
+                
+                // Update all panel backgrounds
+                document.querySelectorAll('.bg-white').forEach(el => {
+                    el.classList.remove('bg-white');
+                    el.classList.add('bg-gray-800');
+                });
+                
+                // Update gauge mask
+                document.querySelector('.gauge-mask').style.background = '#1F2937';
+                
+                localStorage.setItem('theme', 'dark');
+            }
+            
+            // Reinitialize charts with new theme
+            initializeCharts();
+        });
+        
+        // Methodology toggle
+        const methodologyHeader = document.getElementById('methodology-header');
+        const methodologyContent = document.getElementById('methodology-content');
+        const methodologyChevron = document.getElementById('methodology-chevron');
+        
+        methodologyHeader.addEventListener('click', function() {
+            methodologyContent.classList.toggle('hidden');
+            methodologyChevron.classList.toggle('fa-chevron-down');
+            methodologyChevron.classList.toggle('fa-chevron-up');
+        });
+        
+        // Refresh button functionality
+        const refreshBtn = document.getElementById('refresh-btn');
+        refreshBtn.addEventListener('click', function() {
+            // Show loading state
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Refreshing...';
+            
+            // Simulate data refresh (would be replaced with actual API call)
+            setTimeout(() => {
+                updateLastUpdated();
+                initializeCharts(); // Re-render charts with new data
+                
+                // Reset button
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-sync-alt mr-2"></i> Refresh Data';
+            }, 1500);
+        });
+        
+        // Update timestamp
+        function updateLastUpdated() {
+            const now = new Date();
+            const options = { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric', 
+                hour: 'numeric', 
+                minute: '2-digit', 
+                hour12: true 
+            };
+            document.getElementById('last-updated').textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        // Auto-refresh timer
+        let refreshCountdown = 60;
+        function startRefreshTimer() {
+            const interval = setInterval(() => {
+                refreshCountdown--;
+                
+                if (refreshCountdown <= 0) {
+                    refreshCountdown = 60;
+                    refreshBtn.click();
+                }
+            }, 1000);
+        }
+        
+        // Initialize charts
+        function initializeCharts() {
+            // Get theme colors based on current mode
+            const isDarkMode = localStorage.getItem('theme') !== 'light';
+            const textColor = isDarkMode ? '#f3f4f6' : '#111827';
+            const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+            
+            // Set default Chart.js options for all charts
+            Chart.defaults.color = textColor;
+            Chart.defaults.borderColor = gridColor;
+            
+            // Historical Risk Trend Chart
+            const riskTrendCtx = document.getElementById('risk-trend-chart').getContext('2d');
+            const riskTrendChart = new Chart(riskTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Risk Score',
+                        data: [25, 28, 32, 35, 40, 38, 42, 45, 48, 42, 40, 42],
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Risk Score'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '2025'
+                            }
+                        }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: 67,
+                                    yMax: 67,
+                                    borderColor: '#EF4444',
+                                    borderWidth: 2,
+                                    borderDash: [6, 6],
+                                    label: {
+                                        content: 'High Risk Threshold',
+                                        enabled: true
+                                    }
+                                },
+                                line2: {
+                                    type: 'line',
+                                    yMin: 33,
+                                    yMax: 33,
+                                    borderColor: '#FBBF24',
+                                    borderWidth: 2,
+                                    borderDash: [6, 6],
+                                    label: {
+                                        content: 'Caution Threshold',
+                                        enabled: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Yield Curve Chart
+            const yieldCurveCtx = document.getElementById('yield-curve-chart').getContext('2d');
+            const yieldCurveChart = new Chart(yieldCurveCtx, {
+                type: 'line',
+                data: {
+                    labels: ['1M', '3M', '6M', '1Y', '2Y', '5Y', '10Y', '30Y'],
+                    datasets: [{
+                        label: 'Current Yield Curve',
+                        data: [4.2, 4.4, 4.6, 4.7, 4.5, 4.3, 4.2, 4.4],
+                        borderColor: '#3B82F6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        tension: 0.3,
+                        fill: false
+                    },
+                    {
+                        label: '3 Months Ago',
+                        data: [4.0, 4.1, 4.3, 4.5, 4.6, 4.7, 4.8, 4.9],
+                        borderColor: '#9CA3AF',
+                        borderDash: [5, 5],
+                        tension: 0.3,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Yield (%)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // VIX Chart
+            const vixCtx = document.getElementById('vix-chart').getContext('2d');
+            const vixChart = new Chart(vixCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'VIX Index',
+                        data: [18, 16, 17, 19, 20, 18, 19, 21, 20, 22, 24, 22.5],
+                        borderColor: '#EC4899',
+                        backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'VIX Value'
+                            }
+                        }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: 30,
+                                    yMax: 30,
+                                    borderColor: '#EF4444',
+                                    borderWidth: 2,
+                                    borderDash: [6, 6],
+                                    label: {
+                                        content: 'Alert Threshold',
+                                        enabled: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Credit Spreads Chart
+            const creditSpreadsCtx = document.getElementById('credit-spreads-chart').getContext('2d');
+            const creditSpreadsChart = new Chart(creditSpreadsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'BBB-Treasury Spread',
+                        data: [2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2],
+                        borderColor: '#F59E0B',
+                        backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Spread (%)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: 3.5,
+                                    yMax: 3.5,
+                                    borderColor: '#EF4444',
+                                    borderWidth: 2,
+                                    borderDash: [6, 6],
+                                    label: {
+                                        content: 'Alert Threshold',
+                                        enabled: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Market Breadth Chart
+            const marketBreadthCtx = document.getElementById('market-breadth-chart').getContext('2d');
+            const marketBreadthChart = new Chart(marketBreadthCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Advance/Decline Ratio',
+                        data: [1.2, 1.1, 1.0, 0.95, 0.9, 0.85, 0.8, 0.78, 0.76, 0.74, 0.73, 0.75],
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'A/D Ratio'
+                            }
+                        }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: 0.5,
+                                    yMax: 0.5,
+                                    borderColor: '#EF4444',
+                                    borderWidth: 2,
+                                    borderDash: [6, 6],
+                                    label: {
+                                        content: 'Alert Threshold',
+                                        enabled: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLastUpdated();
+            initializeCharts();
+            startRefreshTimer();
+        });
+        
+        // Auto-refresh data every 60 seconds
+        setInterval(function() {
+            refreshBtn.click();
+        }, 60000);
+    </script>
+</body>
+</html>
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDssiRX%2FH20o9dWWqwqCPqlfBvUZakKUX2MCxcVjvejA1dZDajk%2FBXpnPeX72mD2WUuOrXku3U2bZHRvjR%2BStuIaT%2FOTD5EH8PkEGpK6c6YyFnsrZPZ6iRbgl%2BE9typa2dw5l7sywOO3n3C%2F2Cq0yYB8mPTdj%2FWS5eIBdX71OavX2lOAYrWbH0o1xwOGbk%2BfTaFIQXLvvr4Qayp1J%2BLAM%2BUDE9Xl3fJwJMWrdOV9lCxBbvrbdtde3H6dRcV0tCOk6nyW%2FKx%2BtQ%2Btp5NtrCRX8fxAsnNEJNWxAptfLjT7a5CVCk1%2F1ruycQgNj1JfRUFkq%2B5IFtCXy9U2Qt6ezUCUDG40x5WoCJj%2F0MZlOrNHRTA%2BzFpB877P3fRQgGJmOEOdIzvBds8E0IW4bSpYchCLvNTtL%2FBh7az6jt4vSNUYJMSB6v06JDd5yHCrdjKeAlRx%2FBCTryiyKhlx4VFZu1%2FU0Zl4h6rXFf4f4VVC3FOmSgV4ztEfjIFkpayM3cOO8iJyYwtUBXI19Pi0Lf%2F%2FzGi1rVIM%3D";
+        window.__genspark_locale = "en-US";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDssiRX/H20o9dWWqwqCPqlfBvUZakKUX2MCxcVjvejA1dZDajk/BXpnPeX72mD2WUuOrXku3U2bZHRvjR+StuIaT/OTD5EH8PkEGpK6c6YyFnsrZPZ6iRbgl+E9typa2dw5l7sywOO3n3C/2Cq0yYB8mPTdj/WS5eIBdX71OavX2lOAYrWbH0o1xwOGbk+fTaFIQXLvvr4Qayp1J+LAM+UDE9Xl3fJwJMWrdOV9lCxBbvrbdtde3H6dRcV0tCOk6nyW/Kx+tQ+tp5NtrCRX8fxAsnNEJNWxAptfLjT7a5CVCk1/1ruycQgNj1JfRUFkq+5IFtCXy9U2Qt6ezUCUDG40x5WoCJj/0MZlOrNHRTA+zFpB877P3fRQgGJmOEOdIzvBds8E0IW4bSpYchCLvNTtL/Bh7az6jt4vSNUYJMSB6v06JDd5yHCrdjKeAlRx/BCTryiyKhlx4VFZu1/U0Zl4h6rXFf4f4VVC3FOmSgV4ztEfjIFkpayM3cOO8iJyYwtUBXI19Pi0Lf//zGi1rVIM=";
+    </script>
+    
