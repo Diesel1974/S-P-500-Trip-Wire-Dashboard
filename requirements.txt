@@ -1,0 +1,11 @@
+# Reddit Stock Market Sentiment Scraper Requirements
+
+# Reddit API wrapper
+praw==7.7.1
+
+# Sentiment analysis
+vaderSentiment==3.3.2
+
+# Additional dependencies
+# Note: tkinter is usually included with Python standard library
+# If you encounter issues, you may need to install python3-tk via your system package manager
