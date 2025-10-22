@@ -380,6 +380,132 @@
                 </div>
             </div>
 
+            <!-- Sentiment Analysis Section -->
+            <div class="bg-gray-800 rounded-lg p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-xl font-semibold">Sentiment Stock Agent</h2>
+                        <p class="text-sm text-gray-400">AI-powered sentiment analysis across tech sectors</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span id="api-status" class="px-3 py-1 text-xs rounded-full bg-gray-700 text-gray-400">
+                            <i class="fas fa-circle text-gray-500"></i> API Offline
+                        </span>
+                        <button id="sentiment-refresh-btn" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-md flex items-center">
+                            <i class="fas fa-sync-alt mr-2"></i> Refresh Sentiment
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sector Sentiment Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <!-- AI Sector -->
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-2 flex items-center">
+                            <i class="fas fa-brain mr-2 text-blue-400"></i>
+                            AI Sector
+                        </h3>
+                        <div id="ai-sentiment-score" class="text-3xl font-bold mb-2">--</div>
+                        <div id="ai-sentiment-label" class="text-sm mb-2">Loading...</div>
+                        <div class="text-xs text-gray-400">
+                            <span id="ai-article-count">0</span> articles analyzed
+                        </div>
+                        <div class="mt-3">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-green-400"><i class="fas fa-arrow-up"></i> <span id="ai-positive">0</span></span>
+                                <span class="text-gray-400"><i class="fas fa-minus"></i> <span id="ai-neutral">0</span></span>
+                                <span class="text-red-400"><i class="fas fa-arrow-down"></i> <span id="ai-negative">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Centers Sector -->
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-2 flex items-center">
+                            <i class="fas fa-server mr-2 text-green-400"></i>
+                            Data Centers
+                        </h3>
+                        <div id="dc-sentiment-score" class="text-3xl font-bold mb-2">--</div>
+                        <div id="dc-sentiment-label" class="text-sm mb-2">Loading...</div>
+                        <div class="text-xs text-gray-400">
+                            <span id="dc-article-count">0</span> articles analyzed
+                        </div>
+                        <div class="mt-3">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-green-400"><i class="fas fa-arrow-up"></i> <span id="dc-positive">0</span></span>
+                                <span class="text-gray-400"><i class="fas fa-minus"></i> <span id="dc-neutral">0</span></span>
+                                <span class="text-red-400"><i class="fas fa-arrow-down"></i> <span id="dc-negative">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Power Generation Sector -->
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-2 flex items-center">
+                            <i class="fas fa-bolt mr-2 text-yellow-400"></i>
+                            Power Generation
+                        </h3>
+                        <div id="power-sentiment-score" class="text-3xl font-bold mb-2">--</div>
+                        <div id="power-sentiment-label" class="text-sm mb-2">Loading...</div>
+                        <div class="text-xs text-gray-400">
+                            <span id="power-article-count">0</span> articles analyzed
+                        </div>
+                        <div class="mt-3">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-green-400"><i class="fas fa-arrow-up"></i> <span id="power-positive">0</span></span>
+                                <span class="text-gray-400"><i class="fas fa-minus"></i> <span id="power-neutral">0</span></span>
+                                <span class="text-red-400"><i class="fas fa-arrow-down"></i> <span id="power-negative">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Analysis Tool -->
+                <div class="bg-gray-700 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold mb-4">Stock Sentiment Analysis</h3>
+                    <div class="flex space-x-2 mb-4">
+                        <input
+                            type="text"
+                            id="stock-ticker-input"
+                            placeholder="Enter ticker (e.g., NVDA)"
+                            class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                        <button id="analyze-stock-btn" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-md">
+                            <i class="fas fa-search mr-2"></i> Analyze
+                        </button>
+                    </div>
+                    <div id="stock-analysis-result" class="hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold mb-2">Stock Information</h4>
+                                <div class="text-sm space-y-1">
+                                    <div><span class="text-gray-400">Name:</span> <span id="stock-name">--</span></div>
+                                    <div><span class="text-gray-400">Price:</span> $<span id="stock-price">--</span></div>
+                                    <div><span class="text-gray-400">Change:</span> <span id="stock-change">--</span></div>
+                                    <div><span class="text-gray-400">Sector:</span> <span id="stock-sector">--</span></div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-2">Recommendation</h4>
+                                <div id="stock-recommendation" class="p-3 rounded-md bg-gray-800">
+                                    <div class="text-xl font-bold mb-1" id="rec-action">--</div>
+                                    <div class="text-sm text-gray-400" id="rec-reason">--</div>
+                                    <div class="text-xs mt-2">Confidence: <span id="rec-confidence">--</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Latest Tech News -->
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold mb-3">Latest Tech News</h3>
+                    <div id="news-articles" class="space-y-3 max-h-96 overflow-y-auto">
+                        <p class="text-gray-400 text-sm">Click "Refresh Sentiment" to load latest news...</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Methodology Section -->
             <div class="bg-gray-800 rounded-lg p-6 mb-8">
                 <div class="flex justify-between items-center cursor-pointer" id="methodology-header">
@@ -811,6 +937,253 @@
         setInterval(function() {
             refreshBtn.click();
         }, 60000);
+
+        // ========================================
+        // Sentiment Stock Agent Integration
+        // ========================================
+
+        const SENTIMENT_API_URL = 'http://localhost:5000';
+        let apiAvailable = false;
+
+        // Check API availability
+        async function checkApiStatus() {
+            try {
+                const response = await fetch(`${SENTIMENT_API_URL}/health`);
+                if (response.ok) {
+                    apiAvailable = true;
+                    document.getElementById('api-status').innerHTML = '<i class="fas fa-circle text-green-500"></i> API Online';
+                    document.getElementById('api-status').classList.remove('bg-gray-700', 'text-gray-400');
+                    document.getElementById('api-status').classList.add('bg-green-900', 'text-green-300');
+                    return true;
+                }
+            } catch (error) {
+                apiAvailable = false;
+                document.getElementById('api-status').innerHTML = '<i class="fas fa-circle text-red-500"></i> API Offline';
+                document.getElementById('api-status').classList.remove('bg-green-900', 'text-green-300');
+                document.getElementById('api-status').classList.add('bg-gray-700', 'text-gray-400');
+            }
+            return false;
+        }
+
+        // Update sector sentiment display
+        function updateSectorSentiment(sectorKey, data) {
+            if (!data || !data.sentiment_summary) return;
+
+            const summary = data.sentiment_summary;
+            const scoreElement = document.getElementById(`${sectorKey}-sentiment-score`);
+            const labelElement = document.getElementById(`${sectorKey}-sentiment-label`);
+            const countElement = document.getElementById(`${sectorKey}-article-count`);
+            const positiveElement = document.getElementById(`${sectorKey}-positive`);
+            const neutralElement = document.getElementById(`${sectorKey}-neutral`);
+            const negativeElement = document.getElementById(`${sectorKey}-negative`);
+
+            // Update score
+            const score = (summary.avg_vader_compound * 100).toFixed(1);
+            scoreElement.textContent = score > 0 ? `+${score}` : score;
+
+            // Color code based on sentiment
+            scoreElement.className = 'text-3xl font-bold mb-2';
+            if (summary.overall === 'positive') {
+                scoreElement.classList.add('text-green-400');
+                labelElement.textContent = 'Positive';
+                labelElement.className = 'text-sm mb-2 text-green-400';
+            } else if (summary.overall === 'negative') {
+                scoreElement.classList.add('text-red-400');
+                labelElement.textContent = 'Negative';
+                labelElement.className = 'text-sm mb-2 text-red-400';
+            } else {
+                scoreElement.classList.add('text-gray-400');
+                labelElement.textContent = 'Neutral';
+                labelElement.className = 'text-sm mb-2 text-gray-400';
+            }
+
+            // Update counts
+            countElement.textContent = data.article_count || 0;
+            positiveElement.textContent = summary.positive_count || 0;
+            neutralElement.textContent = summary.neutral_count || 0;
+            negativeElement.textContent = summary.negative_count || 0;
+        }
+
+        // Load sentiment data for all sectors
+        async function loadSentimentData() {
+            if (!apiAvailable) {
+                await checkApiStatus();
+                if (!apiAvailable) {
+                    alert('Sentiment API is not available. Please start the API server using: python api.py');
+                    return;
+                }
+            }
+
+            const sentimentBtn = document.getElementById('sentiment-refresh-btn');
+            sentimentBtn.disabled = true;
+            sentimentBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Loading...';
+
+            try {
+                // Load AI sector
+                const aiResponse = await fetch(`${SENTIMENT_API_URL}/sentiment/sector/ai`);
+                if (aiResponse.ok) {
+                    const aiData = await aiResponse.json();
+                    updateSectorSentiment('ai', aiData);
+                }
+
+                // Load Data Centers sector
+                const dcResponse = await fetch(`${SENTIMENT_API_URL}/sentiment/sector/data_centers`);
+                if (dcResponse.ok) {
+                    const dcData = await dcResponse.json();
+                    updateSectorSentiment('dc', dcData);
+                }
+
+                // Load Power Generation sector
+                const powerResponse = await fetch(`${SENTIMENT_API_URL}/sentiment/sector/power_generation`);
+                if (powerResponse.ok) {
+                    const powerData = await powerResponse.json();
+                    updateSectorSentiment('power', powerData);
+                }
+
+                // Load latest news
+                const newsResponse = await fetch(`${SENTIMENT_API_URL}/sentiment/news?sector=all&days=7`);
+                if (newsResponse.ok) {
+                    const newsData = await newsResponse.json();
+                    displayNews(newsData.articles);
+                }
+
+            } catch (error) {
+                console.error('Error loading sentiment data:', error);
+                alert('Error loading sentiment data. Check console for details.');
+            } finally {
+                sentimentBtn.disabled = false;
+                sentimentBtn.innerHTML = '<i class="fas fa-sync-alt mr-2"></i> Refresh Sentiment';
+            }
+        }
+
+        // Display news articles
+        function displayNews(articles) {
+            const newsContainer = document.getElementById('news-articles');
+            if (!articles || articles.length === 0) {
+                newsContainer.innerHTML = '<p class="text-gray-400 text-sm">No articles found.</p>';
+                return;
+            }
+
+            newsContainer.innerHTML = articles.slice(0, 10).map(article => {
+                const sentimentColor = article.overall_sentiment === 'positive' ? 'text-green-400' :
+                                      article.overall_sentiment === 'negative' ? 'text-red-400' : 'text-gray-400';
+                const sentimentIcon = article.overall_sentiment === 'positive' ? 'fa-arrow-up' :
+                                     article.overall_sentiment === 'negative' ? 'fa-arrow-down' : 'fa-minus';
+
+                return `
+                    <div class="bg-gray-800 rounded-lg p-3">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="text-sm font-semibold flex-1">${article.title || 'No title'}</h4>
+                            <span class="${sentimentColor} ml-2">
+                                <i class="fas ${sentimentIcon}"></i>
+                            </span>
+                        </div>
+                        <p class="text-xs text-gray-400 mb-2">${article.description || ''}</p>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-500">${article.source || 'Unknown'}</span>
+                            <span class="text-gray-500">${article.sector || 'General'}</span>
+                            <span class="${sentimentColor} font-semibold">${article.overall_sentiment}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Analyze specific stock
+        async function analyzeStock(ticker) {
+            if (!apiAvailable) {
+                alert('Sentiment API is not available. Please start the API server.');
+                return;
+            }
+
+            const analyzeBtn = document.getElementById('analyze-stock-btn');
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Analyzing...';
+
+            try {
+                const response = await fetch(`${SENTIMENT_API_URL}/analyze/${ticker.toUpperCase()}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displayStockAnalysis(data);
+                } else {
+                    alert('Failed to analyze stock. Please check the ticker symbol.');
+                }
+            } catch (error) {
+                console.error('Error analyzing stock:', error);
+                alert('Error analyzing stock. Check console for details.');
+            } finally {
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerHTML = '<i class="fas fa-search mr-2"></i> Analyze';
+            }
+        }
+
+        // Display stock analysis
+        function displayStockAnalysis(data) {
+            const resultDiv = document.getElementById('stock-analysis-result');
+            const stock = data.stock;
+            const recommendation = data.recommendation;
+
+            if (!stock || !stock.valid) {
+                alert('Invalid stock ticker or data not available.');
+                return;
+            }
+
+            // Update stock info
+            document.getElementById('stock-name').textContent = stock.name || stock.ticker;
+            document.getElementById('stock-price').textContent = stock.current_price || '--';
+
+            const changeColor = stock.change >= 0 ? 'text-green-400' : 'text-red-400';
+            const changeIcon = stock.change >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+            document.getElementById('stock-change').innerHTML =
+                `<span class="${changeColor}"><i class="fas ${changeIcon}"></i> ${stock.change_pct}%</span>`;
+            document.getElementById('stock-sector').textContent = stock.sector || '--';
+
+            // Update recommendation
+            const recAction = document.getElementById('rec-action');
+            const recDiv = document.getElementById('stock-recommendation');
+            recAction.textContent = recommendation.action.toUpperCase();
+
+            // Color code recommendation
+            recDiv.className = 'p-3 rounded-md';
+            if (recommendation.action === 'buy') {
+                recDiv.classList.add('bg-green-900');
+                recAction.className = 'text-xl font-bold mb-1 text-green-400';
+            } else if (recommendation.action === 'sell') {
+                recDiv.classList.add('bg-red-900');
+                recAction.className = 'text-xl font-bold mb-1 text-red-400';
+            } else {
+                recDiv.classList.add('bg-gray-800');
+                recAction.className = 'text-xl font-bold mb-1 text-gray-400';
+            }
+
+            document.getElementById('rec-reason').textContent = recommendation.reason || '--';
+            document.getElementById('rec-confidence').textContent = recommendation.confidence || '--';
+
+            // Show result
+            resultDiv.classList.remove('hidden');
+        }
+
+        // Event listeners for sentiment section
+        document.getElementById('sentiment-refresh-btn').addEventListener('click', loadSentimentData);
+
+        document.getElementById('analyze-stock-btn').addEventListener('click', function() {
+            const ticker = document.getElementById('stock-ticker-input').value.trim();
+            if (ticker) {
+                analyzeStock(ticker);
+            } else {
+                alert('Please enter a stock ticker symbol.');
+            }
+        });
+
+        // Allow Enter key to trigger analysis
+        document.getElementById('stock-ticker-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('analyze-stock-btn').click();
+            }
+        });
+
+        // Check API status on load
+        setTimeout(checkApiStatus, 1000);
     </script>
 </body>
 </html>
