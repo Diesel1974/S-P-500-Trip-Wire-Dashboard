@@ -20,10 +20,23 @@ An interactive web dashboard that monitors key risk indicators for the S&P 500 i
 - **News Aggregation**: Latest tech news with sentiment classification
 - **Smart Recommendations**: AI-powered buy/sell/hold suggestions
 
+### Stock GUI - Trading Terminal (NEW!)
+- **Modern UI**: Sleek glassmorphism design with animated gradients
+- **Real-time Charts**: Interactive price charts with hover tooltips
+- **Watchlist Management**: Track multiple stocks simultaneously
+- **Sentiment Gauges**: Visual sentiment indicators with circular progress
+- **Live News Feed**: Latest news with sentiment classification
+- **Buy/Sell/Hold Signals**: AI-powered trading recommendations
+- **Sector Overview**: Quick view of AI, Data Centers, and Power sector sentiment
+- **Responsive Design**: Works on desktop and mobile devices
+
 ## Quick Start
 
-### Dashboard Only
-Simply open `index.html` in your browser to view the interactive dashboard.
+### Dashboard
+Simply open `index.html` in your browser to view the trip-wire dashboard.
+
+### Stock GUI Trading Terminal
+Open `stock_gui.html` in your browser for the advanced trading interface with real-time sentiment analysis.
 
 ### With Sentiment Agent
 
@@ -41,8 +54,9 @@ The API will be available at `http://localhost:5000`
 
 ## Documentation
 
-- **Dashboard**: See the dashboard interface by opening `index.html`
-- **Sentiment Agent**: See [SENTIMENT_AGENT_README.md](SENTIMENT_AGENT_README.md) for detailed API documentation
+- **Trip-Wire Dashboard**: Open `index.html` for S&P 500 risk monitoring
+- **Stock GUI**: Open `stock_gui.html` for the advanced trading terminal
+- **Sentiment Agent API**: See [SENTIMENT_AGENT_README.md](SENTIMENT_AGENT_README.md) for detailed API documentation
 
 ## Installation (Sentiment Agent)
 
@@ -98,7 +112,8 @@ curl http://localhost:5000/sentiment/news?sector=ai&days=7
 
 ```
 S-P-500-Trip-Wire-Dashboard/
-├── index.html                    # Main dashboard UI
+├── index.html                    # Trip-Wire Dashboard (risk monitoring)
+├── stock_gui.html                # Stock GUI Trading Terminal (NEW!)
 ├── sentiment_stock_agent.py      # Core sentiment analysis engine
 ├── api.py                        # Flask REST API
 ├── requirements.txt              # Python dependencies
