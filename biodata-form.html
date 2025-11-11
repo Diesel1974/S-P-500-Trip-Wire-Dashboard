@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vann Equity Management - Biographical Datasheet Form</title>
+  <!-- jQuery (required for form functionality) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <style>
+    /* Vann Equity Management Form Styling - Enhanced Version */
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+    /* Reset and base styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.6;
+      background-color: #f9f9f9; /* Assuming your site has a light background */
+      color: #333;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px; /* Adjust to match your site's content width */
+      margin: 0 auto;
+      padding: 0;
+      background-color: transparent;
+    }
+
+    /* Typography */
+    h1 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      color: #152238;
+      text-align: center;
+      margin: 40px 0 20px;
+      font-size: 36px;
+      position: relative;
+    }
+
+    h1:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background-color: #152238;
+    }
+
+    /* Progress indicator - more elegant and branded */
+    .progress-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin: 50px 0 40px;
+      position: relative;
+    }
+
+    .progress-indicator:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #e0e0e0;
+      z-index: 1;
+    }
+
+    .progress-step {
+      position: relative;
+      z-index: 2;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #f5f5f5;
+      border: 2px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: #666;
+      transition: all 0.3s ease;
+    }
+
+    .progress-step:after {
+      content: attr(data-title);
+      position: absolute;
+      top: 45px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 12px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .progress-step.active {
+      background-color: #152238;
+      color: white;
+      border-color: #152238;
+      box-shadow: 0 0 0 4px rgba(21, 34, 56, 0.2);
+    }
+
+    .progress-step.completed {
+      background-color: #152238;
+      color: white;
+      border-color: #152238;
+    }
+
+    /* Form sections - more elegant with better spacing */
+    fieldset {
+      border: none;
+      margin: 0 0 30px;
+      padding: 20px 0 40px;
+      position: relative;
+    }
+
+    fieldset:not(.active) {
+      display: none;
+    }
+
+    legend {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      font-size: 24px;
+      color: #152238;
+      padding: 0 0 10px 0;
+      margin-bottom: 30px;
+      width: 100%;
+      border-bottom: 1px solid rgba(21, 34, 56, 0.1);
+    }
+
+    /* Multi-column layout for form sections */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    /* For sections that should be three columns */
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    /* For form inputs that should take the full width */
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    /* For sections with custom widths */
+    .col-70 {
+      grid-column: span 2;
+    }
+
+    .col-30 {
+      grid-column: span 1;
+    }
+
+    /* Form controls with enhanced styling */
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    /* Improved input styling */
+    input[type="text"],
+    input[type="date"],
+    input[type="email"],
+    input[type="number"],
+    input[type="tel"],
+    select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      font-size: 16px;
+      transition: all 0.3s;
+      background-color: #fff;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #152238;
+      box-shadow: 0 0 0 3px rgba(21, 34, 56, 0.1);
+    }
+
+    /* Radio and checkbox containers */
+    .radio-group,
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    /* Custom radio and checkbox styling */
+    .custom-control {
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .custom-control input {
+      position: absolute;
+      opacity: 0;
+      height: 0;
+      width: 0;
+    }
+
+    .checkmark {
+      height: 20px;
+      width: 20px;
+      background-color: #fff;
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      margin-right: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .radio-checkmark {
+      border-radius: 50%;
+    }
+
+    .custom-control:hover input ~ .checkmark {
+      background-color: #f5f5f5;
+    }
+
+    .custom-control input:checked ~ .checkmark {
+      background-color: #152238;
+      border-color: #152238;
+    }
+
+    .checkmark:after {
+      content: '';
+      display: none;
+    }
+
+    .custom-control input:checked ~ .checkmark:after {
+      display: block;
+    }
+
+    .custom-control .checkmark:after {
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .custom-control .radio-checkmark:after {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+    }
+
+    /* Section dividers */
+    .section-divider {
+      height: 1px;
+      background-color: rgba(21, 34, 56, 0.1);
+      margin: 30px 0;
+      width: 100%;
+    }
+
+    /* Button styling to match branding */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(21, 34, 56, 0.1);
+    }
+
+    button {
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 500;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button.prev {
+      background-color: #fff;
+      color: #152238;
+      border: 1px solid #152238;
+    }
+
+    button.next {
+      background-color: #152238;
+      color: white;
+    }
+
+    button.next:hover {
+      background-color: #1d2e4a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    button.prev:hover {
+      background-color: #f5f5f5;
+      transform: translateY(-2px);
+    }
+
+    #finalSubmit {
+      background-color: #152238;
+      color: white;
+      padding: 16px 32px;
+      font-size: 18px;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #finalSubmit:hover {
+      background-color: #1d2e4a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    #finalSubmit:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.3);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+
+    #finalSubmit:hover:after {
+      animation: ripple 1s ease-out;
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+      }
+      20% {
+        transform: scale(25, 25);
+        opacity: 0.3;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(40, 40);
+      }
+    }
+
+    /* Review section styling */
+    .review-header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eaeaea;
+    }
+
+    .review-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 30px;
+      color: #152238;
+      margin: 0 0 10px 0;
+    }
+
+    .review-subtitle {
+      font-size: 16px;
+      color: #666;
+      margin: 0;
+    }
+
+    .form-section {
+      background-color: #fff;
+      border-radius: 6px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s;
+    }
+
+    .form-section:hover {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-section-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 20px;
+      color: #152238;
+      margin-top: 0;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .review-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .review-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .review-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .field-name {
+      font-weight: 600;
+      width: 40%;
+      color: #444;
+    }
+
+    .field-value {
+      color: #222;
+    }
+
+    .declaration {
+      background-color: #f5f7fa;
+      padding: 25px;
+      border-radius: 6px;
+      margin: 30px 0;
+      border-left: 4px solid #152238;
+      font-style: italic;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Responsive design */
+    @media (max-width: 992px) {
+      .form-grid, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .col-70, .col-30 {
+        grid-column: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .progress-step {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+      }
+
+      .progress-step:after {
+        font-size: 10px;
+      }
+
+      button {
+        padding: 12px 20px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      legend {
+        font-size: 22px;
+      }
+    }
+
+    /* Additional helper classes */
+    .small-input {
+      max-width: 150px;
+    }
+
+    .mb-0 {
+      margin-bottom: 0 !important;
+    }
+
+    .mt-0 {
+      margin-top: 0 !important;
+    }
+
+    .text-muted {
+      color: #6c757d;
+      font-size: 14px;
+    }
+
+    /* Add subtle animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    fieldset.active {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    /* Integration fixes to blend form with site */
+    .container {
+      max-width: 100% !important;
+      width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    /* Match your site's content width */
+    @media (min-width: 992px) {
+      #multiStepForm,
+      .progress-indicator,
+      fieldset {
+        max-width: 1140px; /* Adjust to match your site's content area width */
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    /* Reset any form backgrounds to match your site */
+    fieldset, .form-section {
+      background-color: transparent !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* Adopt site typography */
+    body, input, select, button {
+      font-family: inherit !important; /* Will inherit from your site */
+    }
+
+    /* Blend with your site's existing margins and padding */
+    #multiStepForm {
+      padding: 0 !important;
+    }
+
+    /* Remove any inner container styles that might create visual boundaries */
+    .form-grid, .form-grid-3 {
+      margin-left: -10px !important;
+      margin-right: -10px !important;
+      width: calc(100% + 20px) !important;
+    }
+
+    /* Match your site's padding for form grid items */
+    .form-grid > div, .form-grid-3 > div {
+      padding: 0 10px !important;
+    }
+
+    /* Remove any box shadows that create visual boundaries */
+    input, select, button, .form-section {
+      box-shadow: none !important;
+    }
+
+    /* Use your site's natural transitions */
+    fieldset.active {
+      animation: none !important; /* Use your site's animations if any */
+    }
+
+    /* Use your site's focus styles */
+    input:focus, select:focus {
+      outline: none !important;
+      border-color: #152238 !important;
+      box-shadow: none !important;
+    }
+
+    /* Ensure form headings match site heading styles */
+    h1, legend, .form-section-title, .review-title {
+      font-family: inherit !important;
+    }
+
+    /* Make the form feel like it belongs on the page */
+    .progress-indicator {
+      margin-top: 20px !important;
+      margin-bottom: 40px !important;
+    }
+
+    /* Ensure spacing before form matches your site */
+    #multiStepForm {
+      margin-top: 20px !important;
+    }
+
+    /* Ensure buttons match site button styling */
+    button {
+      font-family: inherit !important;
+      font-weight: inherit !important;
+    }
+
+    /* Remove any potential shadow on the form container */
+    #multiStepForm {
+      box-shadow: none !important;
+    }
+
+    /* Style for invalid fields */
+    input.invalid, select.invalid {
+      border-color: #dc3545 !important;
+      background-color: rgba(220, 53, 69, 0.05);
+    }
+
+    .radio-group.invalid, .checkbox-group.invalid {
+      border: 1px dashed #dc3545;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    /* Style for the success message */
+    .submission-success {
+      background-color: #f5f7fa;
+      border-left: 4px solid #28a745;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Biographical Datasheet Form</h1>
+
+    <div class="progress-indicator">
+      <div class="progress-step active" id="step1" data-title="Personal Info">1</div>
+      <div class="progress-step" id="step2" data-title="Employment">2</div>
+      <div class="progress-step" id="step3" data-title="Beneficiary">3</div>
+      <div class="progress-step" id="step4" data-title="Suitability">4</div>
+      <div class="progress-step" id="step5" data-title="Financial">5</div>
+      <div class="progress-step" id="step6" data-title="Review">6</div>
+    </div>
+
+    <form id="multiStepForm" action="#" method="post" onsubmit="return false;">
+      <!-- Section 1: Personal Information -->
+      <fieldset id="section1" class="active">
+        <legend>Personal Information</legend>
+
+        <div class="form-grid">
+          <!-- Name fields in a row -->
+          <div>
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required>
+          </div>
+
+          <div>
+            <label for="middle_name">Middle Name:</label>
+            <input type="text" id="middle_name" name="middle_name">
+          </div>
+
+          <div>
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" required>
+          </div>
+
+          <div>
+            <label for="suffix">Suffix:</label>
+            <input type="text" id="suffix" name="suffix">
+          </div>
+
+          <!-- ID and DOB in a row -->
+          <div>
+            <label for="ssn_taxid">Social Security/Tax ID Number:</label>
+            <input type="text" id="ssn_taxid" name="ssn_taxid" required>
+          </div>
+
+          <div>
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required>
+          </div>
+
+          <div class="full-width">
+            <label for="alias">Preferred Name or Alias:</label>
+            <input type="text" id="alias" name="alias">
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <p class="full-width"><strong>Regulations require that you provide us with your legal address.</strong></p>
+
+        <div class="form-grid">
+          <!-- Address fields -->
+          <div class="full-width">
+            <label for="home_address">Home/Legal Street Address (no P.O. boxes):</label>
+            <input type="text" id="home_address" name="home_address" required>
+          </div>
+
+          <div>
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required>
+          </div>
+
+          <div>
+            <label for="state">State or Province:</label>
+            <input type="text" id="state" name="state" required>
+          </div>
+
+          <div>
+            <label for="zip">Zip or Postal Code:</label>
+            <input type="text" id="zip" name="zip" required>
+          </div>
+
+          <div>
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country" required>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <p class="mb-0"><strong>Mailing Address (if different from legal address):</strong></p>
+
+        <div class="form-grid">
+          <div class="full-width">
+            <label for="mailing_address">Mailing Address:</label>
+            <input type="text" id="mailing_address" name="mailing_address">
+          </div>
+
+          <div>
+            <label for="mailing_city">Mailing City:</label>
+            <input type="text" id="mailing_city" name="mailing_city">
+          </div>
+
+          <div>
+            <label for="mailing_state">Mailing State or Province:</label>
+            <input type="text" id="mailing_state" name="mailing_state">
+          </div>
+
+          <div>
+            <label for="mailing_zip">Mailing Zip or Postal Code:</label>
+            <input type="text" id="mailing_zip" name="mailing_zip">
+          </div>
+
+          <div>
+            <label for="mailing_country">Mailing Country:</label>
+            <input type="text" id="mailing_country" name="mailing_country">
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <p class="mb-0"><strong>Contact Information:</strong></p>
+
+        <div class="form-grid">
+          <div>
+            <label for="telephone">Telephone Number:</label>
+            <input type="tel" id="telephone" name="telephone">
+          </div>
+
+          <div>
+            <label for="mobile">Mobile Number:</label>
+            <input type="tel" id="mobile" name="mobile">
+          </div>
+
+          <div>
+            <label for="work">Work Number:</label>
+            <input type="tel" id="work" name="work">
+          </div>
+
+          <div>
+            <label for="extension">Extension:</label>
+            <input type="text" id="extension" name="extension" class="small-input">
+          </div>
+
+          <div class="full-width">
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+            <p class="text-muted">*By providing your email address, you consent to receiving email from Schwab.
+              <a href="https://www.schwab.com/privacy" target="_blank">www.schwab.com/privacy</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <p class="mb-0"><strong>Additional Information:</strong></p>
+
+        <div class="form-grid">
+          <div>
+            <label for="mother_maiden">Mother's Maiden Name:</label>
+            <input type="text" id="mother_maiden" name="mother_maiden">
+          </div>
+
+          <div>
+            <label for="citizenship">Country(ies) of Citizenship:</label>
+            <input type="text" id="citizenship" name="citizenship">
+          </div>
+
+          <div>
+            <label for="legal_residence">Country of Legal Residence:</label>
+            <select id="legal_residence" name="legal_residence" required>
+              <option value="USA">USA</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <p class="mb-0"><strong>Identification:</strong></p>
+
+        <div class="form-grid">
+          <div class="full-width">
+            <label>ID Type:</label>
+            <div class="radio-group">
+              <label class="custom-control">
+                <input type="radio" name="id_type" value="passport" required>
+                <span class="checkmark radio-checkmark"></span>
+                Passport
+              </label>
+              <label class="custom-control">
+                <input type="radio" name="id_type" value="driver_license" required>
+                <span class="checkmark radio-checkmark"></span>
+                Driver's License
+              </label>
+              <label class="custom-control">
+                <input type="radio" name="id_type" value="govt_id" required>
+                <span class="checkmark radio-checkmark"></span>
+                Gov't-Issued ID
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label for="id_number">Identification Number:</label>
+            <input type="text" id="id_number" name="id_number">
+          </div>
+
+          <div>
+            <label for="id_country">Country of Issuance:</label>
+            <input type="text" id="id_country" name="id_country">
+          </div>
+
+          <div>
+            <label for="id_state">State of Issuance (if applicable):</label>
+            <input type="text" id="id_state" name="id_state">
+          </div>
+
+          <div>
+            <label for="id_issue_date">Issue Date:</label>
+            <input type="date" id="id_issue_date" name="id_issue_date">
+          </div>
+
+          <div>
+            <label for="id_expiration_date">Expiration Date:</label>
+            <input type="date" id="id_expiration_date" name="id_expiration_date">
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <div></div> <!-- Empty div to push the button to the right -->
+          <button type="button" class="next" data-next="section2">Next</button>
+        </div>
+      </fieldset>
+
+      <!-- Section 2: Employment Information -->
+      <fieldset id="section2">
+        <legend>Employment Information</legend>
+
+        <div class="form-grid">
+          <div class="full-width">
+            <label>Employment Status:</label>
+            <div class="radio-group">
+              <label class="custom-control">
+                <input type="radio" name="employment_status" value="employed" required>
+                <span class="checkmark radio-checkmark"></span>
+                Employed
+              </label>
+              <label class="custom-control">
+                <input type="radio" name="employment_status" value="self_employed" required>
+                <span class="checkmark radio-checkmark"></span>
+                Self-Employed
+              </label>
+              <label class="custom-control">
+                <input type="radio" name="employment_status" value="retired" required>
+                <span class="checkmark radio-checkmark"></span>
+                Retired
+              </label>
+              <label class="custom-control">
+                <input type="radio" name="employment_status" value="homemaker" required>
+                <span class="checkmark radio-checkmark"></span>
+                Homemaker
+              </label>
+              <label class="custom-control">
+                <input type="radio" name="employment_status" value="student" required>
+                <span class="checkmark radio-checkmark"></span>
+                Student
+              </label>
+              <label class="custom-control">
+                <input type="radio" name="employment_status" value="not_employed" required>
+                <span class="checkmark radio-checkmark"></span>
+                Not Employed
+              </label>
+            </div>
+          </div>
+
+          <div class="full-width">
+            <label for="occupation">Occupation:</label>
+            <select id="occupation" name="occupation" required>
+              <option value="">Select One</option>
+              <option value="business_owner">Business Owner</option>
+              <option value="financial_services">Financial Services</option>
+              <option value="military">Military</option>
+              <option value="consultant">Consultant</option>
+              <option value="executive">Executive/Senior Management</option>
+              <option value="it_professional">Information Technology Professional</option>
+              <option value="educator">Educator</option>
+              <option value="medical_professional">Medical Professional</option>
+              <option value="other_professional">Other Professional</option>
+              <option value="sales_marketing">Sales/Marketing</option>
+              <option value="legal_professional">Legal Professional</option>
+              <option value="clerical_administrative">Clerical/Administrative Services</option>
+              <option value="us_government">U.S. Government Employee</option>
+              <option value="accounting_professional">Accounting Professional</option>
+              <option value="foreign_government">Foreign Government Employee</option>
+              <option value="trade_service">Trade/Service (Labor/Manufacturing/Production)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="employer_name">Employer Name/Business Name:</label>
+            <input type="text" id="employer_name" name="employer_name" required>
+          </div>
+
+          <div class="full-width">
+            <label for="business_address">Business Street Address (no P.O. boxes):</label>
+            <input type="text" id="business_address" name="business_address" required>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button type="button" class="prev" data-prev="section1">Previous</button>
+          <button type="button" class="next" data-next="section3">Next</button>
+        </div>
+      </fieldset>
+
+      <!-- Section 3: Beneficiary Designations -->
+      <fieldset id="section3">
+        <legend>Beneficiary Designations (For IRAs/TOD Accounts)</legend>
+
+        <div class="form-section">
+          <h3 class="form-section-title">Primary Beneficiary</h3>
+          <div class="form-grid">
+            <div>
+              <label for="primary_portion">Portion (%):</label>
+              <input type="number" id="primary_portion" name="primary_portion" min="0" max="100">
+            </div>
+
+            <div>
+              <label for="primary_name">Name:</label>
+              <input type="text" id="primary_name" name="primary_name">
+            </div>
+
+            <div>
+              <label for="primary_relationship">Relationship:</label>
+              <select id="primary_relationship" name="primary_relationship">
+                <option value="">Select One</option>
+                <option value="spouse">Spouse</option>
+                <option value="child">Child</option>
+                <option value="grandchild">Grandchild</option>
+                <option value="parent">Parent</option>
+                <option value="sibling">Sibling</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="full-width">
+              <label>Type:</label>
+              <div class="radio-group">
+                <label class="custom-control">
+                  <input type="radio" name="primary_type" value="individual">
+                  <span class="checkmark radio-checkmark"></span>
+                  Individual
+                </label>
+                <label class="custom-control">
+                  <input type="radio" name="primary_type" value="trust">
+                  <span class="checkmark radio-checkmark"></span>
+                  Trust
+                </label>
+                <label class="custom-control">
+                  <input type="radio" name="primary_type" value="organization">
+                  <span class="checkmark radio-checkmark"></span>
+                  Organization
+                </label>
+                <label class="custom-control">
+                  <input type="radio" name="primary_type" value="estate">
+                  <span class="checkmark radio-checkmark"></span>
+                  Estate
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3 class="form-section-title">Contingent Beneficiary</h3>
+          <div class="form-grid">
+            <div>
+              <label for="contingent_portion">Portion (%):</label>
+              <input type="number" id="contingent_portion" name="contingent_portion" min="0" max="100">
+            </div>
+
+            <div>
+              <label for="contingent_name">Name:</label>
+              <input type="text" id="contingent_name" name="contingent_name">
+            </div>
+
+            <div>
+              <label for="contingent_relationship">Relationship:</label>
+              <select id="contingent_relationship" name="contingent_relationship">
+                <option value="">Select One</option>
+                <option value="spouse">Spouse</option>
+                <option value="child">Child</option>
+                <option value="grandchild">Grandchild</option>
+                <option value="parent">Parent</option>
+                <option value="sibling">Sibling</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="full-width">
+              <label>Type:</label>
+              <div class="radio-group">
+                <label class="custom-control">
+                  <input type="radio" name="contingent_type" value="individual">
+                  <span class="checkmark radio-checkmark"></span>
+                  Individual
+                </label>
+                <label class="custom-control">
+                  <input type="radio" name="contingent_type" value="trust">
+                  <span class="checkmark radio-checkmark"></span>
+                  Trust
+                </label>
+                <label class="custom-control">
+                  <input type="radio" name="contingent_type" value="organization">
+                  <span class="checkmark radio-checkmark"></span>
+                  Organization
+                </label>
+                <label class="custom-control">
+                  <input type="radio" name="contingent_type" value="estate">
+                  <span class="checkmark radio-checkmark"></span>
+                  Estate
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button type="button" class="prev" data-prev="section2">Previous</button>
+          <button type="button" class="next" data-next="section4">Next</button>
+        </div>
+      </fieldset>
+
+      <!-- Section 4: Suitability Information -->
+      <fieldset id="section4">
+        <legend>Suitability Information and Requirements</legend>
+
+        <div class="form-grid">
+          <div class="full-width">
+            <p><strong>Primary Objective (check at least one):</strong></p>
+            <div class="checkbox-group">
+              <label class="custom-control">
+                <input type="checkbox" name="primary_objective[]" value="capital_preservation">
+                <span class="checkmark"></span>
+                Capital Preservation
+              </label>
+              <label class="custom-control">
+                <input type="checkbox" name="primary_objective[]" value="income">
+                <span class="checkmark"></span>
+                Income
+              </label>
+              <label class="custom-control">
+                <input type="checkbox" name="primary_objective[]" value="balanced">
+                <span class="checkmark"></span>
+                Balanced
+              </label>
+              <label class="custom-control">
+                <input type="checkbox" name="primary_objective[]" value="growth">
+                <span class="checkmark"></span>
+                Growth
+              </label>
+              <label class="custom-control">
+                <input type="checkbox" name="primary_objective[]" value="aggressive_growth">
+                <span class="checkmark"></span>
+                Aggressive Growth
+              </label>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <div class="full-width">
+            <p><strong>Risk Tolerance – How would you react to a loss in your overall portfolio over 12 months?</strong></p>
+            <div class="radio-group">
+              <label class="custom-control">
+                <input type="radio" name="risk_tolerance" value="very_conservative" required>
+                <span class="checkmark radio-checkmark"></span>
+                Very Conservative – Change if loss &gt;5%
+              </label>
+              <label class="custom-control">
+                <input type="radio" name="risk_tolerance" value="conservative" required>
+                <span class="checkmark radio-checkmark"></span>
+                Conservative – Change if loss &gt;10%
+              </label>
+              <label class="custom-control">
+                <input type="radio" name="risk_tolerance" value="moderate" required>
+                <span class="checkmark radio-checkmark"></span>
+                Moderate – Change if loss &gt;20%
+              </label>
+              <label class="custom-control">
+                <input type="radio" name="risk_tolerance" value="aggressive" required>
+                <span class="checkmark radio-checkmark"></span>
+                Aggressive – Can withstand losses &gt;20%
+              </label>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <div class="form-grid-3">
+            <div>
+              <label for="annual_return">Desired Annual Rate of Return:</label>
+              <select id="annual_return" name="annual_return" required>
+                <option value="">Select One</option>
+                <option value="0-2.5">0 - 2.5%</option>
+                <option value="2.5-5">2.5 – 5%</option>
+                <option value="5-7.5">5 – 7.5%</option>
+                <option value="7.5-10">7.5 – 10%</option>
+                <option value="10+">10% +</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="liquidity_needs">Liquidity Needs:</label>
+              <select id="liquidity_needs" name="liquidity_needs" required>
+                <option value="">Select One</option>
+                <option value="less_than_1">Less than 1 year</option>
+                <option value="1-5">1-5 years</option>
+                <option value="5-10">5-10 years</option>
+                <option value="10_or_more">10 or more years</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="investor_timeframe">Investor Time Frame:</label>
+              <select id="investor_timeframe" name="investor_timeframe" required>
+                <option value="">Select One</option>
+                <option value="less_than_1">Less than 1 year</option>
+                <option value="1-5">1-5 years</option>
+                <option value="5-10">5-10 years</option>
+                <option value="10_or_more">10 or more years</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <div class="full-width">
+            <p><strong>Investor Experience (Check all that apply):</strong></p>
+            <div class="checkbox-group">
+              <label class="custom-control">
+                <input type="checkbox" name="investor_experience[]" value="stocks">
+                <span class="checkmark"></span>
+                Stocks
+              </label>
+              <label class="custom-control">
+                <input type="checkbox" name="investor_experience[]" value="mutual_funds">
+                <span class="checkmark"></span>
+                Mutual Funds
+              </label>
+              <label class="custom-control">
+                <input type="checkbox" name="investor_experience[]" value="bonds">
+                <span class="checkmark"></span>
+                Bonds
+              </label>
+              <label class="custom-control">
+                <input type="checkbox" name="investor_experience[]" value="options">
+                <span class="checkmark"></span>
+                Options
+              </label>
+              <label class="custom-control">
+                <input type="checkbox" name="investor_experience[]" value="alternative_assets">
+                <span class="checkmark"></span>
+                Alternative Assets
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label for="years_experience">Years of Experience:</label>
+            <input type="number" id="years_experience" name="years_experience" min="0" required>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button type="button" class="prev" data-prev="section3">Previous</button>
+          <button type="button" class="next" data-next="section5">Next</button>
+        </div>
+      </fieldset>
+
+      <!-- Section 5: Financial Information -->
+      <fieldset id="section5">
+        <legend>Financial Information</legend>
+
+        <div class="form-grid">
+          <div>
+            <label for="household_income">Annual Household Income:</label>
+            <select id="household_income" name="household_income" required>
+              <option value="less_100">Less than $100,000</option>
+              <option value="100_250">$100,000 to $250,000</option>
+              <option value="250_1000">$250,000 to $1,000,000</option>
+              <option value="more_1000">More than $1,000,000</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="liquid_net_worth">Liquid Net Worth (Exclusive of residence):</label>
+            <select id="liquid_net_worth" name="liquid_net_worth" required>
+              <option value="less_250">Less than $250,000</option>
+              <option value="250_750">$250,000 to $750,000</option>
+              <option value="750_1500">$750,000 to $1,500,000</option>
+              <option value="1500_5000">$1,500,000 to $5,000,000</option>
+              <option value="more_5000">More than $5,000,000</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="total_net_worth">Total Net Worth (Inclusive of residence):</label>
+            <select id="total_net_worth" name="total_net_worth" required>
+              <option value="less_250">Less than $250,000</option>
+              <option value="250_750">$250,000 to $750,000</option>
+              <option value="750_1500">$750,000 to $1,500,000</option>
+              <option value="1500_5000">$1,500,000 to $5,000,000</option>
+              <option value="more_5000">More than $5,000,000</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button type="button" class="prev" data-prev="section4">Previous</button>
+          <button type="button" class="next" data-next="reviewSection">Review</button>
+        </div>
+      </fieldset>
+
+      <!-- Review Section -->
+      <fieldset id="reviewSection">
+        <div class="review-header">
+          <h2 class="review-title">Review Your Information</h2>
+          <p class="review-subtitle">Please review the information below before final submission</p>
+        </div>
+
+        <div class="form-section">
+          <h3 class="form-section-title">Personal Information</h3>
+          <div class="review-section-content" id="review-personal">
+            <!-- Dynamically filled -->
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3 class="form-section-title">Employment Information</h3>
+          <div class="review-section-content" id="review-employment">
+            <!-- Dynamically filled -->
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3 class="form-section-title">Beneficiary Designations</h3>
+          <div class="review-section-content" id="review-beneficiary">
+            <!-- Dynamically filled -->
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3 class="form-section-title">Suitability Information</h3>
+          <div class="review-section-content" id="review-suitability">
+            <!-- Dynamically filled -->
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3 class="form-section-title">Financial Information</h3>
+          <div class="review-section-content" id="review-financial">
+            <!-- Dynamically filled -->
+          </div>
+        </div>
+
+        <div class="declaration">
+          <p>By submitting this form, I certify that the information provided is true and accurate to the best of my knowledge.</p>
+        </div>
+
+        <div class="nav-buttons">
+          <button type="button" class="prev" data-prev="section5">Previous</button>
+          <button type="button" id="finalSubmit">Submit to Cyndi McKinney</button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+  <script>
+    // Enhanced form functionality
+    $(document).ready(function() {
+      // Debug flag - set to false in production
+      const DEBUG = false;
+      const STORAGE_KEY = 'biographicalFormData';
+
+      // Debug logging function
+      function logDebug(message) {
+        if (DEBUG) {
+          console.log(`[DEBUG] ${message}`);
+        }
+      }
+
+      // Initialize the form with proper display
+      function initializeForm() {
+        // Hide all fieldsets except the first one
+        $('fieldset').hide();
+        $('#section1').show().addClass('active');
+        updateProgressSteps('section1');
+
+        // Add proper IDs to all inputs if missing
+        $('input, select').each(function() {
+          if (!$(this).attr('id') && $(this).attr('name')) {
+            $(this).attr('id', $(this).attr('name').replace(/\[\]$/, ''));
+          }
+        });
+
+        // Make sure all input labels are properly associated with inputs
+        $('label').each(function() {
+          const forAttr = $(this).attr('for');
+          if (!forAttr && $(this).next('input, select').length) {
+            $(this).attr('for', $(this).next('input, select').attr('id'));
+          }
+        });
+
+        // Add animation classes
+        $('#section1').addClass('fadeIn');
+
+        logDebug('Form initialized');
+      }
+
+      // Enhanced save form data function
+      function saveFormData() {
+        try {
+          const formData = {};
+
+          // Get all input values with better handling
+          $('#multiStepForm').find('input, select').each(function() {
+            const $field = $(this);
+            const name = $field.attr('name');
+
+            if (!name) return; // Skip fields without a name
+
+            if ($field.attr('type') === 'radio' || $field.attr('type') === 'checkbox') {
+              // For radio buttons and checkboxes, only save if checked
+              if ($field.is(':checked')) {
+                // Handle array notation in checkbox names
+                if (name.endsWith('[]')) {
+                  const baseName = name.replace(/\[\]$/, '');
+                  if (!formData[baseName]) {
+                    formData[baseName] = [];
+                  }
+                  formData[baseName].push($field.val());
+                } else {
+                  formData[name] = $field.val();
+                }
+              }
+            } else {
+              // For other inputs, just save the value
+              formData[name] = $field.val();
+            }
+          });
+
+          // Save the timestamp to track how old the data is
+          formData._lastUpdated = new Date().toISOString();
+
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+          logDebug('Form data saved successfully');
+        } catch (error) {
+          logDebug(`Error saving form data: ${error.message}`);
+        }
+      }
+
+      // Enhanced load form data function
+      function loadFormData() {
+        try {
+          const savedData = localStorage.getItem(STORAGE_KEY);
+          if (!savedData) {
+            logDebug('No saved form data found');
+            return false;
+          }
+
+          const formData = JSON.parse(savedData);
+
+          // Check if data is older than 24 hours
+          const lastUpdated = new Date(formData._lastUpdated || 0);
+          const now = new Date();
+          const hoursDiff = (now - lastUpdated) / (1000 * 60 * 60);
+
+          if (hoursDiff > 24) {
+            logDebug('Saved data is older than 24 hours, clearing it');
+            clearAllFormData();
+            return false;
+          }
+
+          logDebug('Loading saved form data');
+
+          // Fill all form fields with saved data
+          Object.entries(formData).forEach(([name, value]) => {
+            // Skip metadata fields that start with underscore
+            if (name.startsWith('_')) return;
+
+            const $fields = $(`[name="${name}"], [name="${name}[]"]`);
+
+            if ($fields.length === 0) {
+              logDebug(`No field found for name: ${name}`);
+              return;
+            }
+
+            if ($fields.first().attr('type') === 'radio') {
+              // For radio buttons
+              $(`[name="${name}"][value="${value}"]`).prop('checked', true);
+            } else if ($fields.first().attr('type') === 'checkbox') {
+              // For checkboxes
+              if (Array.isArray(value)) {
+                value.forEach(val => {
+                  $(`[name="${name}[]"][value="${val}"]`).prop('checked', true);
+                });
+              } else {
+                $(`[name="${name}"][value="${value}"]`).prop('checked', true);
+              }
+            } else {
+              // For other input types
+              $fields.val(value);
+            }
+          });
+
+          logDebug('Form data loaded successfully');
+          return true;
+        } catch (error) {
+          logDebug(`Error loading form data: ${error.message}`);
+          return false;
+        }
+      }
+
+      // Enhanced navigation between sections
+      function goToSection(targetId) {
+        if ($('#' + targetId).length === 0) {
+          logDebug(`Section not found: ${targetId}`);
+          return;
+        }
+
+        // Validate current section before proceeding (only if moving forward)
+        const currentSection = $('fieldset.active').attr('id');
+        const movingForward = getStepNumber(targetId) > getStepNumber(currentSection);
+
+        if (movingForward && !validateSection(currentSection)) {
+          logDebug(`Validation failed for section: ${currentSection}`);
+          return;
+        }
+
+        // Save form data before navigation
+        saveFormData();
+
+        // Fade out current section
+        $('fieldset.active').fadeOut(300, function() {
+          $(this).removeClass('active');
+
+          // Fade in target section
+          $('#' + targetId).fadeIn(300).addClass('active');
+
+          // Update progress indicator
+          updateProgressSteps(targetId);
+
+          // Scroll to top of the form
+          $('html, body').animate({
+            scrollTop: $('#multiStepForm').offset().top - 50
+          }, 300);
+        });
+
+        logDebug(`Navigated to section: ${targetId}`);
+      }
+
+      // Helper to get step number from section ID
+      function getStepNumber(sectionId) {
+        switch(sectionId) {
+          case 'section1': return 1;
+          case 'section2': return 2;
+          case 'section3': return 3;
+          case 'section4': return 4;
+          case 'section5': return 5;
+          case 'reviewSection': return 6;
+          default: return 0;
+        }
+      }
+
+      // Section validation
+      function validateSection(sectionId) {
+        // Get all required fields in this section
+        const $requiredFields = $('#' + sectionId).find('input[required], select[required]');
+        let isValid = true;
+
+        // Skip validation for beneficiary section
+        if (sectionId === 'section3') {
+          return true;
+        }
+
+        // Check each required field
+        $requiredFields.each(function() {
+          const $field = $(this);
+
+          // Skip radio buttons and checkboxes that aren't checked as long as one in the group is checked
+          if (($field.attr('type') === 'radio' || $field.attr('type') === 'checkbox')) {
+            const name = $field.attr('name');
+            if ($(`[name="${name}"]:checked`).length === 0) {
+              isValid = false;
+              highlightField($field.closest('.radio-group, .checkbox-group'));
+            }
+            return true; // Continue to next iteration
+          }
+
+          if (!$field.val().trim()) {
+            isValid = false;
+            highlightField($field);
+          }
+        });
+
+        return isValid;
+      }
+
+      // Highlight invalid field
+      function highlightField($field) {
+        $field.addClass('invalid');
+        $field.one('focus change', function() {
+          $(this).removeClass('invalid');
+        });
+      }
+
+      // Update progress indicator to show which step is active
+      function updateProgressSteps(currentSectionId) {
+        // Reset all steps
+        $('.progress-step').removeClass('active completed');
+
+        // Set active step
+        let activeStepNum = getStepNumber(currentSectionId);
+
+        // Mark completed and active steps
+        for (let i = 1; i <= 6; i++) {
+          if (i < activeStepNum) {
+            $(`#step${i}`).addClass('completed');
+          } else if (i === activeStepNum) {
+            $(`#step${i}`).addClass('active');
+          }
+        }
+      }
+
+      // Generate review content with improved formatting
+      function generateReview() {
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        if (!savedData) {
+          $('#reviewContent').html('<p>No form data found</p>');
+          return;
+        }
+
+        const formData = JSON.parse(savedData);
+
+        // Define field categories with more intuitive display names
+        const categories = {
+          'personal': {
+            title: 'Personal Information',
+            fields: [
+              {name: 'first_name', label: 'First Name'},
+              {name: 'middle_name', label: 'Middle Name'},
+              {name: 'last_name', label: 'Last Name'},
+              {name: 'suffix', label: 'Suffix'},
+              {name: 'ssn_taxid', label: 'SSN/Tax ID'},
+              {name: 'dob', label: 'Date of Birth', type: 'date'},
+              {name: 'alias', label: 'Preferred Name'},
+              {name: 'home_address', label: 'Home Address'},
+              {name: 'city', label: 'City'},
+              {name: 'state', label: 'State'},
+              {name: 'zip', label: 'ZIP Code'},
+              {name: 'country', label: 'Country'},
+              {name: 'telephone', label: 'Telephone'},
+              {name: 'mobile', label: 'Mobile'},
+              {name: 'work', label: 'Work Phone'},
+              {name: 'email', label: 'Email'}
+            ]
+          },
+          'employment': {
+            title: 'Employment Information',
+            fields: [
+              {name: 'employment_status', label: 'Employment Status'},
+              {name: 'occupation', label: 'Occupation'},
+              {name: 'employer_name', label: 'Employer Name'},
+              {name: 'business_address', label: 'Business Address'}
+            ]
+          },
+          'beneficiary': {
+            title: 'Beneficiary Designations',
+            fields: [
+              {name: 'primary_portion', label: 'Primary Beneficiary Portion (%)'},
+              {name: 'primary_name', label: 'Primary Beneficiary Name'},
+              {name: 'primary_relationship', label: 'Primary Beneficiary Relationship'},
+              {name: 'primary_type', label: 'Primary Beneficiary Type'},
+              {name: 'contingent_portion', label: 'Contingent Beneficiary Portion (%)'},
+              {name: 'contingent_name', label: 'Contingent Beneficiary Name'},
+              {name: 'contingent_relationship', label: 'Contingent Beneficiary Relationship'},
+              {name: 'contingent_type', label: 'Contingent Beneficiary Type'}
+            ]
+          },
+          'suitability': {
+            title: 'Suitability Information',
+            fields: [
+              {name: 'primary_objective', label: 'Primary Objective', type: 'array'},
+              {name: 'risk_tolerance', label: 'Risk Tolerance'},
+              {name: 'annual_return', label: 'Desired Annual Return'},
+              {name: 'liquidity_needs', label: 'Liquidity Needs'},
+              {name: 'investor_timeframe', label: 'Investment Time Horizon'},
+              {name: 'investor_experience', label: 'Investment Experience', type: 'array'},
+              {name: 'years_experience', label: 'Years of Investment Experience'}
+            ]
+          },
+          'financial': {
+            title: 'Financial Information',
+            fields: [
+              {name: 'household_income', label: 'Annual Household Income', type: 'income'},
+              {name: 'liquid_net_worth', label: 'Liquid Net Worth', type: 'worth'},
+              {name: 'total_net_worth', label: 'Total Net Worth', type: 'worth'}
+            ]
+          }
+        };
+
+        // Format values more intelligently
+        function formatValue(field, value) {
+          if (!value) return '-';
+
+          // Handle special types
+          if (field.type === 'date' && value) {
+            return new Date(value).toLocaleDateString();
+          }
+
+          if (field.type === 'array' && Array.isArray(value)) {
+            return value.join(', ');
+          }
+
+          // Format financial values
+          if (field.type === 'income') {
+            switch(value) {
+              case 'less_100': return 'Less than $100,000';
+              case '100_250': return '$100,000 to $250,000';
+              case '250_1000': return '$250,000 to $1,000,000';
+              case 'more_1000': return 'More than $1,000,000';
+              default: return value;
+            }
+          }
+
+          if (field.type === 'worth') {
+            switch(value) {
+              case 'less_250': return 'Less than $250,000';
+              case '250_750': return '$250,000 to $750,000';
+              case '750_1500': return '$750,000 to $1,500,000';
+              case '1500_5000': return '$1,500,000 to $5,000,000';
+              case 'more_5000': return 'More than $5,000,000';
+              default: return value;
+            }
+          }
+
+          return value;
+        }
+
+        // Process each category with better formatting
+        Object.entries(categories).forEach(([category, config]) => {
+          let sectionHtml = '<table class="review-table">';
+          let hasData = false;
+
+          config.fields.forEach(field => {
+            // Skip if no data or empty
+            const fieldValue = formData[field.name];
+            if (!fieldValue ||
+                (Array.isArray(fieldValue) && fieldValue.length === 0) ||
+                (!Array.isArray(fieldValue) && String(fieldValue).trim() === '')) {
+              return;
+            }
+
+            hasData = true;
+            const displayValue = formatValue(field, fieldValue);
+
+            sectionHtml += `
+              <tr>
+                <td class="field-name">${field.label}</td>
+                <td class="field-value">${displayValue}</td>
+              </tr>
+            `;
+          });
+
+          sectionHtml += '</table>';
+
+          // Only show section if it has data
+          if (hasData) {
+            $(`#review-${category}`).html(sectionHtml);
+          } else {
+            $(`#review-${category}`).html('<p>No information provided</p>');
+          }
+        });
+      }
+
+      // Format form data for email with improved formatting
+      function formatFormDataForEmail() {
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        if (!savedData) return "No form data available";
+
+        const formData = JSON.parse(savedData);
+        let emailBody = "Biographical Datasheet Submission\n\n";
+
+        // Define sections for better email organization
+        const sections = [
+          {title: "PERSONAL INFORMATION", start: true},
+          {fields: ['first_name', 'middle_name', 'last_name', 'suffix', 'ssn_taxid', 'dob', 'alias']},
+          {title: "ADDRESS", start: false},
+          {fields: ['home_address', 'city', 'state', 'zip', 'country', 'mailing_address', 'mailing_city', 'mailing_state', 'mailing_zip', 'mailing_country']},
+          {title: "CONTACT", start: false},
+          {fields: ['telephone', 'mobile', 'work', 'extension', 'email', 'mother_maiden']},
+          {title: "IDENTIFICATION", start: false},
+          {fields: ['citizenship', 'legal_residence', 'id_type', 'id_number', 'id_country', 'id_state', 'id_issue_date', 'id_expiration_date']},
+          {title: "EMPLOYMENT", start: false},
+          {fields: ['employment_status', 'occupation', 'employer_name', 'business_address']},
+          {title: "BENEFICIARY", start: false},
+          {fields: ['primary_portion', 'primary_name', 'primary_relationship', 'primary_type', 'contingent_portion', 'contingent_name', 'contingent_relationship', 'contingent_type']},
+          {title: "SUITABILITY", start: false},
+          {fields: ['primary_objective', 'risk_tolerance', 'annual_return', 'liquidity_needs', 'investor_timeframe', 'investor_experience', 'years_experience']},
+          {title: "FINANCIAL", start: false},
+          {fields: ['household_income', 'liquid_net_worth', 'total_net_worth']},
+        ];
+
+        // Process each section
+        sections.forEach(section => {
+          if (section.title) {
+            emailBody += (section.start ? "" : "\n\n") + section.title + "\n" + "=".repeat(section.title.length) + "\n";
+          }
+
+          if (section.fields) {
+            section.fields.forEach(fieldName => {
+              const value = formData[fieldName];
+              if (value && (Array.isArray(value) ? value.length > 0 : String(value).trim() !== '')) {
+                let displayName = fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                let displayValue = Array.isArray(value) ? value.join(', ') : value;
+                emailBody += `${displayName}: ${displayValue}\n`;
+              }
+            });
+          }
+        });
+
+        return emailBody;
+      }
+
+      // Enhanced function to clear all form data
+      function clearAllFormData() {
+        // Clear localStorage
+        localStorage.removeItem(STORAGE_KEY);
+
+        // Reset all form fields
+        document.querySelectorAll('input, select, textarea').forEach(field => {
+          if (field.type === 'checkbox' || field.type === 'radio') {
+            field.checked = false;
+          } else {
+            field.value = '';
+          }
+        });
+
+        // Return to first section
+        goToSection('section1');
+
+        logDebug('Form data cleared successfully');
+      }
+
+      // Document ready handler - form initialization
+      initializeForm();
+
+      // Load any saved form data
+      loadFormData();
+
+      // Prevent form submission via Enter key
+      $(document).on('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          return false;
+        }
+      });
+
+      // Set up auto-save on input change
+      $('#multiStepForm').on('input change', 'input, select', function() {
+        saveFormData();
+      });
+
+      // Next button click handler
+      $('button.next').click(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const nextId = $(this).data('next');
+
+        // Special handling for review section
+        if (nextId === 'reviewSection') {
+          generateReview();
+        }
+
+        goToSection(nextId);
+      });
+
+      // Previous button click handler
+      $('button.prev').click(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const prevId = $(this).data('prev');
+        goToSection(prevId);
+      });
+
+      // Final submit button handler with improved feedback
+      $('#finalSubmit').click(function(e) {
+        e.preventDefault();
+
+        if (confirm("Are you sure you want to submit your information to Cyndi McKinney?")) {
+          logDebug('Form submission confirmed');
+
+          // Format email body
+          const emailBody = encodeURIComponent(formatFormDataForEmail());
+          const subject = encodeURIComponent("Biographical Datasheet Submission");
+
+          // Open mailto link
+          window.location.href = `mailto:cmckinney@vannequity.com?subject=${subject}&body=${emailBody}`;
+
+          // Show success message
+          const $successMessage = $('<div class="submission-success">' +
+            '<h3>Thank You for Your Submission</h3>' +
+            '<p>Your default email client will open with the form data. Please send the email to complete your submission.</p>' +
+            '</div>');
+
+          $successMessage.css({
+            'position': 'fixed',
+            'top': '50%',
+            'left': '50%',
+            'transform': 'translate(-50%, -50%)',
+            'background-color': 'white',
+            'padding': '30px',
+            'border-radius': '6px',
+            'box-shadow': '0 5px 20px rgba(0,0,0,0.2)',
+            'text-align': 'center',
+            'z-index': '9999',
+            'max-width': '90%',
+            'width': '500px'
+          });
+
+          $('body').append($successMessage);
+
+          // Add close button
+          const $closeButton = $('<button>Close</button>').css({
+            'padding': '10px 20px',
+            'background-color': '#152238',
+            'color': 'white',
+            'border': 'none',
+            'border-radius': '4px',
+            'margin-top': '20px',
+            'cursor': 'pointer'
+          });
+
+          $closeButton.on('click', function() {
+            $successMessage.remove();
+          });
+
+          $successMessage.append($closeButton);
+
+          // Clear form data
+          clearAllFormData();
+        }
+      });
+
+      // Handle clicking on progress steps directly (if valid)
+      $('.progress-step').click(function() {
+        const stepId = $(this).attr('id');
+        const stepNum = parseInt(stepId.replace('step', ''));
+        const currentStep = parseInt($('.progress-step.active').attr('id').replace('step', ''));
+
+        // Only allow going to previous steps or current step by clicking
+        if (stepNum <= currentStep) {
+          goToSection('section' + stepNum);
+        }
+      });
+
+      // Add 24-hour data expiration check
+      function checkDataExpiration() {
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        if (!savedData) return;
+
+        try {
+          const formData = JSON.parse(savedData);
+          const lastUpdated = new Date(formData._lastUpdated || 0);
+          const now = new Date();
+          const hoursDiff = (now - lastUpdated) / (1000 * 60 * 60);
+
+          if (hoursDiff > 24) {
+            logDebug('Data expired - clearing');
+            clearAllFormData();
+          }
+        } catch (e) {
+          clearAllFormData();
+        }
+      }
+
+      // Check for expired data on load
+      checkDataExpiration();
+    });
+  </script>
+</body>
+</html>
